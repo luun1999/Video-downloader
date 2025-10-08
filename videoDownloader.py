@@ -1,7 +1,16 @@
 import tkinter as tk
 import subprocess
 import threading
-from tkinter import ttk
+
+TITLE_ROW = 0
+
+BEST_VIDEO_OP_ROW = 1
+EXPORT_MP4_VIDEO_OP_ROW = 2
+EMBED_META_OP_ROW = 3
+EXPORT_EMBED_META_OP_ROW = 4
+USING_COOKIE_OP_ROW = 5
+USING_YOUTUBE_CLIENT_OP_ROW = 6
+USING_FAKE_USER_CLIENT_OP_ROW = 7
 
 LOG_ROW = 20
 STATUS_ROW = 21
@@ -17,15 +26,17 @@ canEmbedMeta = tk.IntVar()
 canExportEmbedMeta = tk.IntVar()
 usingCookieChrome = tk.IntVar()
 usingVrVideoClient = tk.IntVar()
+usingFakeUserAgent = tk.IntVar()
 isDownloading = False
 
-title = tk.Label(window, text="YT-DLP - Video Downloader", font=("Arial", 16, "bold")).grid(row=0, sticky=tk.W)
-bestVideoCheckBox = tk.Checkbutton(window, text=" Download with best quality", variable=isBestVideo).grid(row=1, sticky=tk.W)
-exportMp4CheckBox = tk.Checkbutton(window, text=" Export MP4", variable=canExportMp4).grid(row=2, sticky=tk.W)
-embedMetaCheckBox = tk.Checkbutton(window, text=" Embed Metadata (require ffmpeg)", variable=canEmbedMeta).grid(row=3, sticky=tk.W)
-exportEmbedMetaCheckBox = tk.Checkbutton(window, text=" Export Metadata", variable=canExportEmbedMeta).grid(row=4, sticky=tk.W)
-usingCookieChromeCheckBox = tk.Checkbutton(window, text=" Use Chrome Cookie", variable=usingCookieChrome).grid(row=5, sticky=tk.W)
-usingVrVideoClientCheckBox = tk.Checkbutton(window, text=" Use Android Vr Client", variable=usingVrVideoClient).grid(row=6, sticky=tk.W)
+title = tk.Label(window, text="YT-DLP - Video Downloader", font=("Arial", 16, "bold")).grid(row=TITLE_ROW, sticky=tk.W)
+bestVideoCheckBox = tk.Checkbutton(window, text=" Download with best quality", variable=isBestVideo).grid(row=BEST_VIDEO_OP_ROW, sticky=tk.W)
+exportMp4CheckBox = tk.Checkbutton(window, text=" Export MP4", variable=canExportMp4).grid(row=EXPORT_MP4_VIDEO_OP_ROW, sticky=tk.W)
+embedMetaCheckBox = tk.Checkbutton(window, text=" Embed Metadata (require ffmpeg)", variable=canEmbedMeta).grid(row=EMBED_META_OP_ROW, sticky=tk.W)
+exportEmbedMetaCheckBox = tk.Checkbutton(window, text=" Export Metadata", variable=canExportEmbedMeta).grid(row=EXPORT_EMBED_META_OP_ROW, sticky=tk.W)
+usingCookieChromeCheckBox = tk.Checkbutton(window, text=" Use Chrome Cookie", variable=usingCookieChrome).grid(row=USING_COOKIE_OP_ROW, sticky=tk.W)
+usingVrVideoClientCheckBox = tk.Checkbutton(window, text=" Use Youtube Android Vr Client", variable=usingVrVideoClient).grid(row=USING_YOUTUBE_CLIENT_OP_ROW, sticky=tk.W)
+usingFakeUserClientCheckBox = tk.Checkbutton(window, text=" Use Fake User Agent", variable=usingFakeUserAgent).grid(row=USING_FAKE_USER_CLIENT_OP_ROW, sticky=tk.W)
 
 urlString = tk.StringVar()
 urlLabel = tk.Label(window, text="URL: ").grid(row=10, sticky=tk.W, padx=5)
@@ -87,7 +98,10 @@ def download_video_runner():
     command = 'yt-dlp'
 
     if usingVrVideoClient.get():
-        command += ' --extractor-arg "youtube:player_client=android_vr" --user-agent ""'
+        command += ' --extractor-arg "youtube:player_client=android_vr"'
+
+    if usingFakeUserAgent.get():
+        command += ' --user-agent "Mozilla/5.0 (Linux; Android 10)"'
 
     if isBestVideo.get():
         command += " -f bestvideo+bestaudio/best"
